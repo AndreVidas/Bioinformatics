@@ -20,24 +20,26 @@ DE_genes <- rbind(DE_genes_down, DE_genes_up)
 head(DE_genes)
 
 # find entrez gene id for each gene
-ensembl <- useDataset("hsapiens_gene_ensembl",mart = useMart("ensembl"))
+ensembl <- useDataset("mmusculus_gene_ensembl",mart = useMart("ensembl"))
 
 
-DE_gene_entrez_id <- unique(getBM(attributes = c("hgnc_symbol", "entrezgene"),    
-                    filters = "hgnc_symbol",
+DE_gene_entrez_id <- unique(getBM(attributes = c("mgi_symbol", "entrezgene"),    
+                    filters = "mgi_symbol",
                     values = rownames(DE_genes),
                     mart = ensembl) )
 head(DE_gene_entrez_id)
 
-geneUniverse_entrez_id <- unique(getBM(attributes = c("hgnc_symbol", "entrezgene"),    
-                                  filters = "hgnc_symbol",
+geneUniverse_entrez_id <- unique(getBM(attributes = c("mgi_symbol", "entrezgene"),    
+                                  filters = "mgi_symbol",
                                   values = geneUniverse,
                                   mart = ensembl) )
 head(geneUniverse_entrez_id)
 
-pathwayEnrichment <- enrichKEGG(as.character(DE_gene_entrez_id$entrezgene), organism = "hsa", keyType = "kegg", pvalueCutoff = 0.05,
+pathwayEnrichment <- enrichKEGG(as.character(DE_gene_entrez_id$entrezgene), organism = "mmu", keyType = "kegg", pvalueCutoff = 0.05,
            pAdjustMethod = "BH", universe = as.character(geneUniverse_entrez_id$entrezgene), minGSSize = 10, maxGSSize = 500,
            qvalueCutoff = 0.2, use_internal_data = FALSE)
+
+
 
 # pathway enrichment summary
 pathwayEnrichment$ID
@@ -47,15 +49,15 @@ pathwayEnrichment$p.adjust
 #### create pathway plots
 
 # convert DE genes to right input format: numeric vector containing logFC with entrezID as names
-DE_genes$hgnc_symbol <- toupper(rownames(DE_genes)) # create new column with upper case gene names so that they match biomarts hgnc_symbols
+#DE_genes$mgi_symbol <- toupper(rownames(DE_genes)) # create new column with upper case gene names so that they match biomarts mgi_symbols
 head(DE_genes, n = 100)
-DE_genes$entrez_id <- DE_gene_entrez_id[match(DE_genes$hgnc_symbol, DE_gene_entrez_id$hgnc_symbol), "entrezgene"]
+DE_genes$entrez_id <- DE_gene_entrez_id[match(rownames(DE_genes), DE_gene_entrez_id$mgi_symbol), "entrezgene"]
 pathway_genes <- DE_genes$log2FoldChange
 names(pathway_genes) <- DE_genes$entrez_id
 
 
 
-pv.out <- pathview(gene.data = pathway_genes, pathway.id = "00100", species = "hsa", out.suffix = "chunqin", kegg.dir = "dataChunqin/results/pathwayEnrichment/", limit = list(gene=c(-round(max(abs(min(pathway_genes)),max(pathway_genes))),round(max(abs(min(pathway_genes)),max(pathway_genes)))), cpd=1), low = "yellow", high = "red", bins = list(gene=8,cpd=10))
-pv.out <- pathview(gene.data = pathway_genes, pathway.id = "00900", species = "hsa", out.suffix = "chunqin", kegg.dir = "dataChunqin/results/pathwayEnrichment/", limit = list(gene=c(-round(max(abs(min(pathway_genes)),max(pathway_genes))),round(max(abs(min(pathway_genes)),max(pathway_genes)))), cpd=1), low = "yellow", high = "red", bins = list(gene=8,cpd=10))
-
-
+pv.out <- pathview(gene.data = pathway_genes, pathway.id = "00100", species = "mmu", out.suffix = "logFC_1", kegg.dir = "dataChunqin/results/pathwayEnrichment/", limit = list(gene=c(-round(max(abs(min(pathway_genes)),max(pathway_genes))),round(max(abs(min(pathway_genes)),max(pathway_genes)))), cpd=1), low = "yellow", high = "red", bins = list(gene=8,cpd=10))
+pv.out <- pathview(gene.data = pathway_genes, pathway.id = "00900", species = "mmu", out.suffix = "logFC_1", kegg.dir = "dataChunqin/results/pathwayEnrichment/", limit = list(gene=c(-round(max(abs(min(pathway_genes)),max(pathway_genes))),round(max(abs(min(pathway_genes)),max(pathway_genes)))), cpd=1), low = "yellow", high = "red", bins = list(gene=8,cpd=10))
+pv.out <- pathview(gene.data = pathway_genes, pathway.id = "03008", species = "mmu", out.suffix = "logFC_1", kegg.dir = "dataChunqin/results/pathwayEnrichment/", limit = list(gene=c(-round(max(abs(min(pathway_genes)),max(pathway_genes))),round(max(abs(min(pathway_genes)),max(pathway_genes)))), cpd=1), low = "yellow", high = "red", bins = list(gene=8,cpd=10))
+pv.out <- pathview(gene.data = pathway_genes, pathway.id = "04142", species = "mmu", out.suffix = "logFC_1", kegg.dir = "dataChunqin/results/pathwayEnrichment/", limit = list(gene=c(-round(max(abs(min(pathway_genes)),max(pathway_genes))),round(max(abs(min(pathway_genes)),max(pathway_genes)))), cpd=1), low = "yellow", high = "red", bins = list(gene=8,cpd=10))
