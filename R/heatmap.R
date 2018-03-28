@@ -1,5 +1,6 @@
 rm(list=ls())
 library(DESeq2)
+library(gplots)
 library(ComplexHeatmap)
 library(circlize)
 
@@ -12,6 +13,8 @@ data_exp <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable_exp,
 data_exp <- as.matrix(counts(data_exp))
 head(data_exp)
 
+#scale(data_exp, center = FALSE, scale = apply(data_exp, 2, sd, na.rm = TRUE))
+#data_exp <- scale(data_exp)
 
 
 #### load DE gene lists
@@ -28,15 +31,24 @@ DE_genes <- rbind(down_exp, up_exp)
 # find expression values from DE genes
 DE_genes_expression <- data_exp[rownames(data_exp) %in% rownames(DE_genes),]
 
-DE_genes_expression <- log2(DE_genes_expression)
-is.na(DE_genes_expression) <- sapply(DE_genes_expression, is.infinite)
+#DE_genes_expression <- log2(DE_genes_expression)
+#is.na(DE_genes_expression) <- sapply(DE_genes_expression, is.infinite)
 
+# define colnames for the plot
+colnames(DE_genes_expression)
+colnames(DE_genes_expression) <- c("sg26 -dox R1", "sg26 -dox R2", "sg26 -dox R3", "sg26 +dox R1", "sg26 +dox R2", "sg26 +dox R3")
 
+# define colors
+color.palette  <- colorRampPalette(c("green", "black", "red"))(n=600)
 
-png(filename = "dataChunqin/results/heatmap/heatmap.png", height = 800, width = (22*nrow(DE_genes_expression)))
-Heatmap(t(DE_genes_expression), name = "log2(RNA expression)", na_col = "black",
-        bottom_annotation_height = unit(3, "cm"),  col = colorRamp2(c(0, max(DE_genes_expression, na.rm = TRUE)), c("blue", "yellow")), show_row_dend = FALSE, show_column_dend = FALSE)
+# plot heatmap
+png(filename = "dataChunqin/results/heatmap/heatmap.png", height = 600, width = (29*nrow(DE_genes_expression)))
+heatmap.2(t(DE_genes_expression), scale = "column", col = color.palette, trace = "none", dendrogram="none", margins=c(10,10), density.info="none", cexRow = 1.5, cexCol = 1.3)
 dev.off()
 
 
+
+
 sessionInfo()
+
+
