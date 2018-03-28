@@ -1,7 +1,7 @@
 rm(list=ls())
 library(DESeq2)
 library(gplots)
-
+library(DESeq2)
 
 
 #### load count data
@@ -9,8 +9,10 @@ sampleTable_exp <- data.frame(sampleName = c("sg26_4d_ctrl_R1", "sg26_4d_ctrl_R2
 data_exp <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable_exp,
                                        directory = "dataChunqin/",
                                        design= ~ condition)
-data_exp <- as.matrix(counts(data_exp))
+data_exp <- estimateSizeFactors(data_exp)
+data_exp <- as.matrix(counts(data_exp, normalized=TRUE))
 head(data_exp)
+
 
 
 
@@ -34,13 +36,14 @@ colnames(DE_genes_expression)
 colnames(DE_genes_expression) <- c("sg26 -dox R1", "sg26 -dox R2", "sg26 -dox R3", "sg26 +dox R1", "sg26 +dox R2", "sg26 +dox R3")
 
 # define colors
-color.palette  <- colorRampPalette(c("green", "black", "red"))(n=600)
+color.palette  <- colorRampPalette(c("yellow", "black", "red"))(n=600)
 
 # plot heatmap
 png(filename = "dataChunqin/results/heatmap/heatmap.png", height = 600, width = (29*nrow(DE_genes_expression)))
 heatmap.2(t(DE_genes_expression), scale = "column", col = color.palette, trace = "none", dendrogram="none", margins=c(10,10), density.info="none", cexRow = 1.5, cexCol = 1.3)
 dev.off()
 
+# normalize: read count normalization
 
 
 
