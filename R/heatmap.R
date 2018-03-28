@@ -1,8 +1,7 @@
 rm(list=ls())
 library(DESeq2)
 library(gplots)
-library(ComplexHeatmap)
-library(circlize)
+
 
 
 #### load count data
@@ -13,8 +12,6 @@ data_exp <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable_exp,
 data_exp <- as.matrix(counts(data_exp))
 head(data_exp)
 
-#scale(data_exp, center = FALSE, scale = apply(data_exp, 2, sd, na.rm = TRUE))
-#data_exp <- scale(data_exp)
 
 
 #### load DE gene lists
@@ -31,8 +28,6 @@ DE_genes <- rbind(down_exp, up_exp)
 # find expression values from DE genes
 DE_genes_expression <- data_exp[rownames(data_exp) %in% rownames(DE_genes),]
 
-#DE_genes_expression <- log2(DE_genes_expression)
-#is.na(DE_genes_expression) <- sapply(DE_genes_expression, is.infinite)
 
 # define colnames for the plot
 colnames(DE_genes_expression)
