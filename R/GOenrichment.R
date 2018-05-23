@@ -13,6 +13,6 @@ names(geneUni) <- rownames(geneList)
 
 
 # GO enrichment analysis
-GOdata <- new("topGOdata", ontology = "BP", allGenes = geneUni, geneSel = function(p) p < 0.01, description = "Test", annot = annFUN.org, mapping = "org.Mm.eg.db", ID = "Ensembl")
+GOdata <- new("topGOdata", ontology = "BP", allGenes = geneUni, geneSel = function(p) p < 0.01, description = "Mouse GO Enrichment Analysis", ID = "Ensembl", mapping = "org.Mm.eg.db", annot = annFUN.org)
 resultFisher <- runTest(GOdata, algorithm = "classic", statistic = "fisher")
 GenTable(GOdata, classicFisher = resultFisher, topNodes = 10)
