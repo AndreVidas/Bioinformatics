@@ -30,7 +30,7 @@ head(counts(ddsHTSeq_NC))
 ddsHTSeq_exp <- DESeq(ddsHTSeq_exp)
 res_exp <- results(ddsHTSeq_exp, contrast=c("condition","trt","ctrl"))
 resultsNames(ddsHTSeq_exp)
-resLFCshrinked_exp <- lfcShrink(ddsHTSeq_exp, coef=2)
+resLFCshrinked_exp <- lfcShrink(ddsHTSeq_exp, coef=2, res = res_exp)
 
 # MA plot
 pdf(file = "dataChunqin/results/MA_plots/expData.pdf")
