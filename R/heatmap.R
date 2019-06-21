@@ -9,6 +9,8 @@ sampleTable_exp <- data.frame(sampleName = c("sg26_4d_ctrl_R1", "sg26_4d_ctrl_R2
 data_exp <- DESeqDataSetFromHTSeqCount(sampleTable = sampleTable_exp,
                                        directory = "dataChunqin/",
                                        design= ~ condition)
+
+# normalize: read count normalization
 data_exp <- estimateSizeFactors(data_exp)
 data_exp <- as.matrix(counts(data_exp, normalized=TRUE))
 head(data_exp)
@@ -43,7 +45,6 @@ png(filename = "dataChunqin/results/heatmap/heatmap.png", height = 600, width = 
 heatmap.2(t(DE_genes_expression), scale = "column", col = color.palette, trace = "none", dendrogram="none", margins=c(10,10), density.info="none", cexRow = 1.5, cexCol = 1.3)
 dev.off()
 
-# normalize: read count normalization
 
 
 
